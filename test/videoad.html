@@ -28,6 +28,11 @@
       <img id="tracker" src="https://detoxifylagoonsnugness.com/chicken.gif" style="display:none">
     </div>
   </div>
+  <!-- player kontrol (simulasi jw): img ad di dalam TIDAK boleh hapus player controls -->
+  <div id="jw-controls" class="jw-controls jw-reset" style="position:absolute;bottom:0;left:0;width:100%;height:40px;background:rgba(0,0,0,.7)">
+    <button id="btnPlay" type="button">Pause</button>
+    <img id="adInControls" src="https://detoxifylagoonsnugness.com/chicken.gif" width="1" height="1" alt="">
+  </div>
 </div>
 <pre id="log">Status: belum dites.</pre>
 <script>
@@ -36,9 +41,13 @@
   const check = () => {
     const el = document.getElementById('container');
     const img = document.getElementById('adimg');
-    log.textContent = (!el || !el.isConnected) && (!img || !img.isConnected)
-      ? 'PASS: overlay ad dihapus'
-      : 'FAIL: overlay ad masih ada';
+    const controls = document.getElementById('jw-controls');
+    const btn = document.getElementById('btnPlay');
+    const adGone = (!el || !el.isConnected) && (!img || !img.isConnected);
+    const controlsAlive = controls && controls.isConnected && btn && btn.isConnected;
+    log.textContent = adGone && controlsAlive
+      ? 'PASS: overlay ad dihapus, kontrol player tetap'
+      : 'FAIL: ' + (adGone ? 'kontrol player kehapus' : 'overlay ad masih ada');
   };
   setInterval(check, 300);
 </script>
