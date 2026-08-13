@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Iklan Aman</title>
+<style>
+  body { font-family: system-ui, sans-serif; width: 280px; margin: 0; padding: 16px; }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  h1 { font-size: 15px; margin: 0 0 4px; }
+  .sub { font-size: 11px; color: #777; margin: 0 0 14px; }
+  .switch { position: relative; display: inline-block; width: 46px; height: 26px; }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .slider { position: absolute; inset: 0; background: #ccc; border-radius: 26px; cursor: pointer; transition: .2s; }
+  .slider::before { content: ""; position: absolute; height: 20px; width: 20px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: .2s; }
+  input:checked + .slider { background: #16a34a; }
+  input:checked + .slider::before { transform: translateX(20px); }
+  .status { font-size: 13px; font-weight: 600; }
+  .status.on { color: #16a34a; }
+  .status.off { color: #dc2626; }
+  .add { display: flex; gap: 6px; margin-top: 12px; }
+  #addDomain { flex: 1; padding: 6px 8px; font-size: 13px; border: 1px solid #ccc; border-radius: 6px; }
+  #btnAdd { padding: 6px 10px; font-size: 13px; border: 0; background: #2563eb; color: #fff; border-radius: 6px; cursor: pointer; }
+  .chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 10px; max-height: 90px; overflow-y: auto; }
+  .chip { font-size: 11px; background: #eef2ff; color: #3730a3; padding: 2px 8px; border-radius: 999px; }
+  .meta { font-size: 11px; color: #888; margin-top: 10px; line-height: 1.4; }
+</style>
+</head>
+<body>
+  <h1>Iklan Aman</h1>
+  <p class="sub">Blokir iklan &amp; redirect judol</p>
+
+  <div class="row">
+    <span id="status" class="status">memuat…</span>
+    <label class="switch">
+      <input type="checkbox" id="toggle">
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <div class="add">
+    <input id="addDomain" placeholder="domain baru, mis: rm999.com" autocomplete="off">
+    <button id="btnAdd">Tambah</button>
+  </div>
+  <div class="chips" id="chips"></div>
+  <p class="meta" id="meta"></p>
+
+  <script src="popup.js"></script>
+</body>
+</html>

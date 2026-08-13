@@ -1,0 +1,200 @@
+[
+  {
+    "id": 1,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": {
+      "urlFilter": "||doubleclick.net",
+      "resourceTypes": ["script", "image", "sub_frame", "xmlhttprequest", "ping", "other"]
+    }
+  },
+  {
+    "id": 2,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": {
+      "urlFilter": "||googlesyndication.com",
+      "resourceTypes": ["script", "image", "sub_frame", "xmlhttprequest", "ping", "other"]
+    }
+  },
+  {
+    "id": 3,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": {
+      "urlFilter": "||adnxs.com",
+      "resourceTypes": ["script", "image", "sub_frame", "xmlhttprequest", "ping", "other"]
+    }
+  },
+  {
+    "id": 4,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": {
+      "urlFilter": "||taboola.com",
+      "resourceTypes": ["script", "image", "sub_frame", "xmlhttprequest", "ping", "other"]
+    }
+  },
+  {
+    "id": 5,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": {
+      "urlFilter": "||outbrain.com",
+      "resourceTypes": ["script", "image", "sub_frame", "xmlhttprequest", "ping", "other"]
+    }
+  },
+  {
+    "id": 10,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": {
+      "urlFilter": "||situsjudol.*",
+      "resourceTypes": ["script", "image", "sub_frame", "xmlhttprequest", "ping", "other"]
+    }
+  },
+  {
+    "id": 11,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": {
+      "urlFilter": "||toto66luck.site",
+      "resourceTypes": ["script", "image", "sub_frame", "xmlhttprequest", "ping", "other"]
+    }
+  },
+  {
+    "id": 12,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": {
+      "urlFilter": "||panen138jt.com",
+      "resourceTypes": ["script", "image", "sub_frame", "xmlhttprequest", "ping", "other"]
+    }
+  },
+  {
+    "id": 13,
+    "priority": 3,
+    "action": { "type": "block" },
+    "condition": {
+      "urlFilter": "||rm358.com",
+      "resourceTypes": ["main_frame", "sub_frame", "script", "image", "xmlhttprequest", "ping", "other"]
+    }
+  },
+  {
+    "id": 14,
+    "priority": 3,
+    "action": { "type": "block" },
+    "condition": {
+      "urlFilter": "||signamentswithd.com",
+      "resourceTypes": ["main_frame", "sub_frame", "script", "image", "xmlhttprequest", "ping", "other"]
+    }
+  },
+  {
+    "id": 15,
+    "priority": 3,
+    "action": { "type": "block" },
+    "condition": {
+      "urlFilter": "||pgslot88semarang.com",
+      "resourceTypes": ["main_frame", "sub_frame", "script", "image", "xmlhttprequest", "ping", "other"]
+    }
+  },
+  {
+    "id": 16,
+    "priority": 3,
+    "action": { "type": "block" },
+    "condition": {
+      "urlFilter": "||supechcopa.com",
+      "resourceTypes": ["main_frame", "sub_frame", "script", "image", "xmlhttprequest", "ping", "other"]
+    }
+  },
+  {
+    "id": 17,
+    "priority": 3,
+    "action": { "type": "block" },
+    "condition": {
+      "urlFilter": "||poodleshocuses.cyou",
+      "resourceTypes": ["main_frame", "sub_frame", "script", "image", "xmlhttprequest", "ping", "other"]
+    }
+  },
+  {
+    "id": 18,
+    "priority": 3,
+    "action": { "type": "block" },
+    "condition": {
+      "urlFilter": "||junclikrmedi.com",
+      "resourceTypes": ["main_frame", "sub_frame", "script", "image", "xmlhttprequest", "ping", "other"]
+    }
+  },
+  {
+    "id": 19,
+    "priority": 3,
+    "action": { "type": "block" },
+    "condition": {
+      "urlFilter": "||crmared.com",
+      "resourceTypes": ["main_frame", "sub_frame", "script", "image", "xmlhttprequest", "ping", "other"]
+    }
+  },
+  {
+    "id": 20,
+    "priority": 3,
+    "action": { "type": "block" },
+    "condition": {
+      "urlFilter": "||crmrc.livejasmin.com",
+      "resourceTypes": ["main_frame", "sub_frame", "script", "image", "xmlhttprequest", "ping", "other"]
+    }
+  },
+  {
+    "id": 21,
+    "priority": 3,
+    "action": { "type": "block" },
+    "condition": {
+      "urlFilter": "||21wiz.com",
+      "resourceTypes": ["main_frame", "sub_frame", "script", "image", "xmlhttprequest", "ping", "other"]
+    }
+  },
+  {
+    "id": 22,
+    "priority": 3,
+    "action": { "type": "block" },
+    "condition": {
+      "urlFilter": "||ero-labs.art",
+      "resourceTypes": ["main_frame", "sub_frame", "script", "image", "xmlhttprequest", "ping", "other"]
+    }
+  },
+  {
+    "id": 23,
+    "priority": 3,
+    "action": { "type": "block" },
+    "condition": {
+      "urlFilter": "||supechcopa.com",
+      "resourceTypes": ["main_frame", "sub_frame", "script", "image", "xmlhttprequest", "ping", "other"]
+    }
+  },
+  {
+    "id": 24,
+    "priority": 3,
+    "action": { "type": "block" },
+    "condition": {
+      "urlFilter": "||comanicilikeiste.com",
+      "resourceTypes": ["main_frame", "sub_frame", "script", "image", "xmlhttprequest", "ping", "other"]
+    }
+  },
+  {
+    "id": 25,
+    "priority": 3,
+    "action": { "type": "block" },
+    "condition": {
+      "urlFilter": "||pncloudfl.com",
+      "resourceTypes": ["main_frame", "sub_frame", "script", "image", "xmlhttprequest", "ping", "other"]
+    }
+  },
+  {
+    "id": 26,
+    "priority": 3,
+    "action": { "type": "block" },
+    "condition": {
+      "urlFilter": "||detoxifylagoonsnugness.com",
+      "resourceTypes": ["main_frame", "sub_frame", "script", "image", "xmlhttprequest", "ping", "other"]
+    }
+  }
+]

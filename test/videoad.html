@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Video ad overlay test</title>
+<style>
+  body { font-family: sans-serif; }
+  #video-box { position: relative; width: 800px; height: 450px; background: #000; }
+  video { width: 100%; height: 100%; }
+</style>
+</head>
+<body>
+<h2>Video ad overlay test</h2>
+<div id="video-box">
+  <video controls src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"></video>
+  <!-- pola ad overlay dari HTML asli user -->
+  <div style="position:fixed;inset:0;display:flex;align-items:flex-end;justify-content:center;z-index:99999;pointer-events:none">
+    <div id="container" style="position:relative;width:auto;height:142px;border-radius:22px;background-color:rgba(255,255,255,0.5);backdrop-filter:blur(4px);box-shadow:none">
+      <div style="display:flex;padding:12px">
+        <div><img id="adimg" src="https://cdn.pncloudfl.com/pn/bb1/0ba/92a/x.gif" alt="" width="60" height="60"></div>
+        <div style="flex:1">
+          <div style="font-weight:bold">Confirm!</div>
+          <div>Are you 18+?</div>
+        </div>
+      </div>
+      <div style="position:absolute;top:0;right:0;background:#0F7EFB;color:#fff;padding:2px 5px;border-radius:5px">Ad</div>
+      <div style="display:flex;justify-content:center;background:#0378ea;color:#fff;border-radius:22px;margin:12px">Continue</div>
+      <img id="tracker" src="https://detoxifylagoonsnugness.com/chicken.gif" style="display:none">
+    </div>
+  </div>
+</div>
+<pre id="log">Status: belum dites.</pre>
+<script>
+  // observer hapus overlay kapan aja; poll state terakhir
+  const log = document.getElementById('log');
+  const check = () => {
+    const el = document.getElementById('container');
+    const img = document.getElementById('adimg');
+    log.textContent = (!el || !el.isConnected) && (!img || !img.isConnected)
+      ? 'PASS: overlay ad dihapus'
+      : 'FAIL: overlay ad masih ada';
+  };
+  setInterval(check, 300);
+</script>
+</body>
+</html>

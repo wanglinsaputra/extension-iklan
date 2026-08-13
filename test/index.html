@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Test Hub - Iklan Aman</title>
+<style>
+  body { font-family: sans-serif; max-width: 720px; margin: 24px; line-height: 1.5; }
+  .warn { background: #fff3cd; border: 1px solid #ffe08a; padding: 12px; border-radius: 6px; }
+  li { margin: 6px 0; }
+  .exp { color: #555; font-size: 0.9em; }
+</style>
+</head>
+<body>
+<h1>Test Hub - extension Iklan Aman</h1>
+<div class="warn">
+<b>PENTING:</b> test pakai <b>profile Chrome terpisah</b> (guest / profile baru), jangan profile utama.
+Situs ads rotasi bisa drop downloader atau payload berbahaya.
+</div>
+
+<h2>Automatis (CI Playwright)</h2>
+<ul>
+  <li><code>npx playwright test</code> — 5 test: overlay, popup guard, DNR block, adblock flags, toggle OFF. <span class="exp">expect: 5/5 PASS</span></li>
+</ul>
+
+<h2>Level 0 - Synthetic (aman, deterministic)</h2>
+<ul>
+  <li><a href="overlay.html">overlay.html</a> — klik harus tembus overlay ke tombol PLAY. <span class="exp">expect: PASS</span></li>
+  <li><a href="popup.html">popup.html</a> — window.open guard. <span class="exp">expect: test 1 diblokir, test 2 &amp; 3 jalan</span></li>
+</ul>
+
+<h2>Level 1 - Real sites, ad network mainstream</h2>
+<ul>
+  <li><a href="https://mangakakalot.com" target="_blank" rel="noopener">mangakakalot.com</a> — <span class="exp">expect: gak ada tab baru random, konten bisa di-klik</span></li>
+  <li><a href="https://bato.to" target="_blank" rel="noopener">bato.to</a> — <span class="exp">expect: sama</span></li>
+  <li><a href="https://www.dafont.com" target="_blank" rel="noopener">dafont.com</a> — <span class="exp">expect: popup ads mati</span></li>
+</ul>
+
+<h2>Level 2 - Situs asli kamu (target sebenarnya)</h2>
+<ul>
+  <li>Situs film/anime yang tadinya redirect judol. <span class="exp">expect: klik play langsung jalan, gak ada tab judol</span></li>
+</ul>
+</body>
+</html>

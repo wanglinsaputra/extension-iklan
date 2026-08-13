@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Popup guard test</title>
+<style>
+  body { font-family: sans-serif; max-width: 720px; margin: 24px; }
+  button, a { display: block; margin: 8px 0; padding: 10px 16px; font-size: 15px; }
+  #log { margin-top: 16px; white-space: pre; font-weight: bold; }
+</style>
+</head>
+<body>
+<h2>Popup guard test (window.open + anchor)</h2>
+<button id="blocked">1. window.open doubleclick.net (harus DIBLOKIR)</button>
+<button id="legit">2. window.open same-site (harus JALAN)</button>
+<button id="blank">3. window.open('','_blank') (harus DIBLOKIR — pola popunder)</button>
+<button id="search">4. window.open google?q=toto66luck.site (harus DIBLOKIR)</button>
+<a id="anchor" href="https://www.google.com/search?q=panen138jt.com+-alternatif" target="_blank">5. klik anchor google?q=panen138jt.com (harus DIBLOKIR)</a>
+<pre id="log">Status: belum dites.</pre>
+<script>
+  const log = (t) => (document.getElementById('log').textContent = t);
+
+  document.getElementById('blocked').addEventListener('click', () => {
+    const r = window.open('https://doubleclick.net/blocked');
+    log(r === null ? '1 PASS: diblokir' : '1 FAIL: bocor');
+  });
+
+  document.getElementById('legit').addEventListener('click', () => {
+    const r = window.open('http://127.0.0.1:8090/me.html');
+    log(r === null ? '2 FAIL: ke-block padahal sama origin' : '2 PASS: tab same-site muncul');
+  });
+
+  document.getElementById('blank').addEventListener('click', () => {
+    const r = window.open('', '_blank');
+    log(r === null ? '3 PASS: blank window diblokir (pola popunder)' : '3 FAIL: blank window bocor');
+  });
+
+  document.getElementById('search').addEventListener('click', () => {
+    const r = window.open('https://www.google.com/search?q=toto66luck.site+-%F0%9F%A5%8F');
+    log(r === null ? '4 PASS: search-redirect diblokir' : '4 FAIL: search-redirect bocor');
+  });
+
+  document.getElementById('anchor').addEventListener('click', (e) => {
+    // kalau handler kita masih kebakar, log
+    log('5 FAIL: anchor ke-bakar, tab search kebuka');
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>DNR block test</title></head>
+<body>
+<h2>DNR block test</h2>
+<pre id="log">Status: belum dites.</pre>
+<script>
+  const log = document.getElementById('log');
+  const t = (s) => (log.textContent = s);
+
+  async function probe(url, label) {
+    try {
+      const r = await fetch(url, { mode: 'no-cors' });
+      t(`${label}: fetch resolve (status ${r.status || 'opaque'}) — request KIRIM`);
+    } catch (e) {
+      t(`${label}: fetch REJECTED — request diblokir`);
+    }
+  }
+
+  // doubleclick di DNR static rules (harus block)
+  probe('https://doubleclick.net/blocked', 'doubleclick.net');
+</script>
+</body>
+</html>
