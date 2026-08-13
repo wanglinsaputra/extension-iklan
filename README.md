@@ -2,6 +2,9 @@
 
 Extension Chrome MV3 anti-iklan & anti-redirect judol untuk situs streaming film/anime.
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![E2E](https://github.com/wanglinsaputra/extension-iklan/actions/workflows/test.yml/badge.svg)](https://github.com/wanglinsaputra/extension-iklan/actions/workflows/test.yml)
+
 Sekali klik **Play** langsung jalan. Tidak ada tab popunder, tidak ada redirect ke situs judol, tidak ada overlay iklan "Are you 18+?" di tengah video.
 
 ## Fitur
@@ -55,6 +58,12 @@ npx playwright test     # butuh Chromium murni (bukan branded Chrome)
 ## Lisensi
 
 [MIT](LICENSE)
+
+## Repo & Kontribusi
+
+- Repo: https://github.com/wanglinsaputra/extension-iklan
+- Contoh / lapor domain iklan baru lewat issue GitHub.
+- Pull request diterima. Jalanin `npx playwright test` dulu sebelum nge-PR.
 
 ## Struktur
 

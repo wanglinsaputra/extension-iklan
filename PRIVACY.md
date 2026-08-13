@@ -37,4 +37,6 @@ Background worker mencoba membaca `http://127.0.0.1:8080/rules` sekali per 30 me
 
 ## Kontak
 
-Buka issue di repositori GitHub (lihat README).
+Repo & issue: https://github.com/wanglinsaputra/extension-iklan
+
+Privacy policy ini tersedia di repo (file `PRIVACY.md`).
