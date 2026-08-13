@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Sync server buat extension Iklan Aman.
-Baca list domain dari rules.json (atau Redis kalau redis module + REDIS_URL),
-serve GET /rules sebagai JSON.
+"""Sync server for the Iklan Aman extension.
+Reads domain list from rules.json (or Redis if redis module + REDIS_URL are set),
+serves GET /rules as JSON.
 """
 import json
 import os
@@ -26,7 +26,7 @@ def load_domains():
             )
             return [d.decode() for d in r.smembers("iklan_aman:blocked")]
         except Exception as e:
-            print("redis error, fallback file:", e)
+            print("redis error, falling back to file:", e)
     with open(RULES_FILE) as f:
         return json.load(f).get("domains", [])
 

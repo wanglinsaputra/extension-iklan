@@ -17,7 +17,7 @@ async function serverDomains() {
     const data = await res.json();
     return Array.isArray(data) ? data : (data.domains || []);
   } catch (e) {
-    console.warn('[iklan-aman] sync gagal, static rules tetap aktif:', e.message);
+    console.warn('[iklan-aman] sync failed, static rules still active:', e.message);
     return [];
   }
 }
@@ -52,7 +52,7 @@ async function applyRules(domains) {
     sync: { at: Date.now(), count: rules.length },
     domains: domains,
   });
-  console.log(`[iklan-aman] sync ${rules.length} domain`);
+  console.log(`[iklan-aman] synced ${rules.length} domains`);
 }
 
 async function sync() {
@@ -73,7 +73,7 @@ async function setEnabled(on) {
   } else if (on) {
     sync();
   }
-  console.log('[iklan-aman] ' + (on ? 'aktif' : 'mati'));
+  console.log('[iklan-aman] ' + (on ? 'active' : 'off'));
 }
 
 chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
@@ -137,7 +137,7 @@ chrome.tabs.onCreated.addListener(async (tab) => {
   chrome.tabs.get(tab.openerTabId, (opener) => {
     if (chrome.runtime.lastError || !opener || !opener.url) return;
     if (isExternalPopup(tab.url, opener.url)) {
-      console.log('[iklan-aman] tutup popunder baru:', tab.url.slice(0, 100));
+      console.log('[iklan-aman] closed new popunder:', tab.url.slice(0, 100));
       chrome.tabs.remove(tab.id);
     }
   });
@@ -155,7 +155,7 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   chrome.tabs.get(tab.openerTabId, (opener) => {
     if (chrome.runtime.lastError || !opener || !opener.url) return;
     if (isExternalPopup(url, opener.url)) {
-      console.log('[iklan-aman] tutup tab popunder:', url.slice(0, 100));
+      console.log('[iklan-aman] closed popunder tab:', url.slice(0, 100));
       chrome.tabs.remove(tabId);
     }
   });
