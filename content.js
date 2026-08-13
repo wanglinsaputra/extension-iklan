@@ -160,7 +160,6 @@
     });
   }
 
-  // Situs utama + subdomain (kingbokep.day vs kingbokep.cc) = same-site, popup boleh.
   const isSameSite = (host) => {
     const h = host.toLowerCase();
     if (h === location.hostname) return true;
@@ -237,7 +236,6 @@
   document.addEventListener('click', passThrough, true);
   document.addEventListener('auxclick', passThrough, true);
 
-  // Link ke host asing = hampir pasti ad/redirect (bokep site). Blokir semua,
   // same-site + subdomain tetap jalan.
   document.addEventListener(
     'click',

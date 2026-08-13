@@ -125,7 +125,13 @@ function isExternalPopup(url, openerUrl) {
   return !sameSiteOf(u.hostname, o.hostname);
 }
 
-chrome.tabs.onCreated.addListener((tab) => {
+async function isEnabled() {
+  const { enabled = true } = await chrome.storage.local.get('enabled');
+  return enabled;
+}
+
+chrome.tabs.onCreated.addListener(async (tab) => {
+  if (!(await isEnabled())) return;
   // window.open(external) langsung → tab created dengan url external.
   if (!tab.openerTabId || !tab.url) return;
   chrome.tabs.get(tab.openerTabId, (opener) => {
@@ -137,7 +143,8 @@ chrome.tabs.onCreated.addListener((tab) => {
   });
 });
 
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+  if (!(await isEnabled())) return;
   if (!changeInfo.url || !tab.openerTabId) return;
   const url = changeInfo.url;
   if (/^chrome-error:\/\//.test(url)) {

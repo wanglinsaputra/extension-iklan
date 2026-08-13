@@ -167,6 +167,21 @@ test('toggle OFF me-nonaktifkan semua', async ({ context }) => {
   await page2.close();
 });
 
+test('toggle OFF: window.open host asing JALAN (semua nonaktif)', async ({ context }) => {
+  const sw = await wakeSw(context);
+  await sw.evaluate(() => chrome.storage.local.set({ enabled: false }));
+
+  const page2 = await context.newPage();
+  await page2.goto('http://127.0.0.1:8090/popup.html');
+  await page2.waitForFunction(() => document.documentElement.dataset.iklanAman === 'off');
+  await page2.click('#blank');
+  await page2.waitForTimeout(100);
+  // OFF → window.open asing harus return window (gak null)
+  const r = await page2.evaluate(() => window.open('https://okx.com/en-us/download'));
+  expect(r).not.toBeNull();
+  await page2.close();
+});
+
 test('addDomain dari popup bikin rule dinamis + blokir', async ({ context, page }) => {
   const sw = await wakeSw(context);
   // jalan yang sama dengan popup: storage extra + trigger sync
