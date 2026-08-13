@@ -236,7 +236,9 @@
   document.addEventListener('click', passThrough, true);
   document.addEventListener('auxclick', passThrough, true);
 
-  // same-site + subdomain tetap jalan.
+  // Anchor: diblokir kalau domain blokir. Synthetic/auto ke host asing = ad → blokir.
+  // Klik asli user ke host asing = navigasi sah → boleh jalan + tandai buat background
+  // biar tab hasil klik gak dikira popunder.
   document.addEventListener(
     'click',
     (e) => {
@@ -245,9 +247,20 @@
       if (!a) return;
       try {
         const u = new URL(a.href, location.href);
-        if (isBlockedUrl(u) || !isSameSite(u.hostname)) {
+        if (isBlockedUrl(u)) {
           e.preventDefault();
           e.stopImmediatePropagation();
+          return;
+        }
+        if (!isSameSite(u.hostname)) {
+          if (!e.isTrusted) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+          } else {
+            window.dispatchEvent(
+              new CustomEvent('iklan-aman-usernav', { detail: { href: u.href } })
+            );
+          }
         }
       } catch (_) {}
     },
