@@ -110,19 +110,33 @@ chrome.alarms.onAlarm.addListener((a) => {
   if (a.name === 'sync') sync();
 });
 
-// Lapis terakhir: tab hasil popunder (opener ada) yang navigasi ke host asing → tutup.
-// Content script gak bisa cegah `w.location = external` (cross-origin).
-function sameSiteOf(a, b) {
-  if (!a || !b) return false;
-  const ha = a.toLowerCase(), hb = b.toLowerCase();
-  return ha === hb || ha.endsWith('.' + hb) || hb.endsWith('.' + ha);
+// Lapis terakhir: tutup tab popunder. PRINSIP: JANGAN pernah close tab hasil klik
+// user ke host asing (itu navigasi sah). Hanya close kalau URL host benar-benar
+// ada di daftar blokir (extra + server) / chrome-error hasil DNR block, dan
+// tidak ada aktivitas klik user dalam beberapa detik terakhir.
+function isBlockedHostName(host) {
+  const h = host.toLowerCase();
+  const staticHosts = [
+    'doubleclick.net', 'googlesyndication.com', 'adnxs.com', 'taboola.com',
+    'outbrain.com', 'rm358.com', 'signamentswithd.com', 'pgslot88semarang.com',
+    'supechcopa.com', 'poodleshocuses.cyou', 'junclikrmedi.com', 'crmared.com',
+    'crmrc.livejasmin.com', 'pncloudfl.com', 'detoxifylagoonsnugness.com',
+    '21wiz.com', 'ero-labs.art', 'comanicilikeiste.com', 'brazzersnetwork.com',
+  ];
+  return (
+    staticHosts.includes(h) ||
+    staticHosts.some((d) => h.endsWith('.' + d))
+  );
 }
 
-function isExternalPopup(url, openerUrl) {
-  if (!/^https?:/.test(url) || !/^https?:/.test(openerUrl)) return false;
-  let u, o;
-  try { u = new URL(url); o = new URL(openerUrl); } catch (_) { return false; }
-  return !sameSiteOf(u.hostname, o.hostname);
+async function isBlockedUrlBg(url) {
+  if (!/^https?:/.test(url)) return false;
+  let u;
+  try { u = new URL(url); } catch (_) { return false; }
+  if (isBlockedHostName(u.hostname)) return true;
+  const { domains = [] } = await chrome.storage.local.get('domains');
+  const h = u.hostname.toLowerCase();
+  return domains.some((d) => h === String(d).toLowerCase() || h.endsWith('.' + d));
 }
 
 async function isEnabled() {
@@ -130,31 +144,26 @@ async function isEnabled() {
   return enabled;
 }
 
-// URL hasil klik asli user (bukan popunder). Simpan di storage.session biar
-// kebaca deterministik dari tabs.onCreated/onUpdated (bukan var memory yang bisa race).
-const USERNAV_MS = 3500;
+// Aktivitas klik asli user. Simpan di storage.session (deterministik antar event).
+const USERNAV_MS = 4000;
 chrome.runtime.onMessage.addListener((msg) => {
   if (msg && msg.type === 'usernav') {
-    chrome.storage.session.set({ userNav: { url: msg.url, at: Date.now() } }).catch(() => {});
+    chrome.storage.session.set({ userNav: { at: Date.now() } }).catch(() => {});
   }
 });
-async function isUserNav(url) {
+async function recentUserNav() {
   const { userNav } = await chrome.storage.session.get('userNav');
-  return userNav && userNav.url === url && Date.now() - userNav.at < USERNAV_MS;
+  return userNav && Date.now() - userNav.at < USERNAV_MS;
 }
 
 chrome.tabs.onCreated.addListener(async (tab) => {
   if (!(await isEnabled())) return;
-  // window.open(external) langsung → tab created dengan url external.
   if (!tab.openerTabId || !tab.url) return;
-  if (await isUserNav(tab.url)) return; // klik asli user → jangan tutup
-  chrome.tabs.get(tab.openerTabId, (opener) => {
-    if (chrome.runtime.lastError || !opener || !opener.url) return;
-    if (isExternalPopup(tab.url, opener.url)) {
-      console.log('[iklan-aman] closed new popunder:', tab.url.slice(0, 100));
-      chrome.tabs.remove(tab.id);
-    }
-  });
+  // Hanya tutup kalau URL host di daftar blokir → pasti popunder/ad, bukan klik user.
+  if (await isBlockedUrlBg(tab.url)) {
+    console.log('[iklan-aman] closed new popunder:', tab.url.slice(0, 100));
+    chrome.tabs.remove(tab.id);
+  }
 });
 
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
@@ -162,17 +171,15 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   if (!changeInfo.url || !tab.openerTabId) return;
   const url = changeInfo.url;
   if (/^chrome-error:\/\//.test(url)) {
-    // Tab popunder yang navigasinya diblokir DNR → mati sisa (chrome-error) → tutup.
-    if (await isUserNav(url)) return; // klik user ke situs yang gagal → biarin (error page user)
+    // chrome-error = navigasi diblokir (DNR). Tapi kalau user baru klik apa pun,
+    // jangan sentuh (bisa jadi situs yang dia buka memang error/gagal).
+    if (await recentUserNav()) return;
     chrome.tabs.remove(tabId);
     return;
   }
-  if (await isUserNav(url)) return; // klik asli user → jangan tutup
-  chrome.tabs.get(tab.openerTabId, (opener) => {
-    if (chrome.runtime.lastError || !opener || !opener.url) return;
-    if (isExternalPopup(url, opener.url)) {
-      console.log('[iklan-aman] closed popunder tab:', url.slice(0, 100));
-      chrome.tabs.remove(tabId);
-    }
-  });
+  // Hanya tutup kalau host benar-benar di daftar blokir.
+  if (await isBlockedUrlBg(url)) {
+    console.log('[iklan-aman] closed popunder tab:', url.slice(0, 100));
+    chrome.tabs.remove(tabId);
+  }
 });
