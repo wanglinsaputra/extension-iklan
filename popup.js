@@ -8,12 +8,12 @@ async function load() {
 
 function render({ enabled, sync, extra }) {
   const status = $('status');
-  status.textContent = enabled ? 'AKTIF' : 'MATI';
+  status.textContent = enabled ? 'ON' : 'OFF';
   status.className = 'status ' + (enabled ? 'on' : 'off');
   $('toggle').checked = enabled;
   $('meta').textContent = sync
-    ? `Sinkron: ${new Date(sync.at).toLocaleTimeString()} · ${sync.count} domain`
-    : 'Aturan static aktif. Belum sinkron.';
+    ? `Synced: ${new Date(sync.at).toLocaleTimeString()} · ${sync.count} domains`
+    : 'Static rules active. Not synced.';
 
   const chips = $('chips');
   chips.innerHTML = '';

@@ -1,79 +1,79 @@
 # Iklan Aman - Play Lurus
 
-Extension Chrome MV3 anti-iklan & anti-redirect judol untuk situs streaming film/anime.
+A Chrome MV3 extension that blocks ads & gambling redirects on streaming sites (movies/anime).
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![E2E](https://github.com/wanglinsaputra/extension-iklan/actions/workflows/test.yml/badge.svg)](https://github.com/wanglinsaputra/extension-iklan/actions/workflows/test.yml)
 
-Sekali klik **Play** langsung jalan. Tidak ada tab popunder, tidak ada redirect ke situs judol, tidak ada overlay iklan "Are you 18+?" di tengah video.
+One click on **Play** and it just works. No popunder tabs, no redirects to gambling sites, no "Are you 18+?" ad overlays covering the video.
 
-## Fitur
+## Features
 
-- **Blokir popunder & popup iklan** — tab baru yang dibuka otomatis (tanpa klik kamu) langsung ditutup.
-- **Blokir redirect judol** — termasuk trik "google search mediator" (`google.com/search?q=<domain-judol>`).
-- **Overlay pass-through** — overlay iklan yang nutupin tombol play di-tembus, klik langsung ke video.
-- **Hapus overlay ad dalam video player** — banner "Ad" / "Confirm 18+" di atas video dihapus dari halaman.
-- **Anti adblock-wall** — netralkan deteksi `canRunAds` / FuckAdBlock biar player gak diblokir.
-- **Toggle on/off** di popup.
-- **Tambah domain blokir manual** dari popup — langsung aktif tanpa reload.
-- **100% lokal** — semua berjalan di browser kamu, tidak ada data dikirim ke server.
+- **Block popunders & popup ads** — tabs opened automatically (without your click) get closed instantly.
+- **Block gambling redirects** — including the "google search mediator" trick (`google.com/search?q=<gambling-domain>`).
+- **Overlay pass-through** — ad overlays covering the play button are clicked through, so clicks reach the video.
+- **Remove in-player ad overlays** — "Ad" / "Confirm 18+" banners over the video get removed from the page.
+- **Anti adblock-wall** — neutralizes `canRunAds` / FuckAdBlock detection so the player isn't blocked.
+- **On/off toggle** in the popup.
+- **Add custom blocked domains** from the popup — takes effect immediately, no reload.
+- **100% local** — everything runs in your browser, no data is sent to any server.
 
-## Instalasi (developer / unpacked)
+## Install (developer / unpacked)
 
-1. Buka `chrome://extensions`
-2. Aktifkan **Developer mode** (kanan atas)
-3. Klik **Load unpacked**
-4. Pilih folder ini (folder yang ada `manifest.json`-nya)
+1. Open `chrome://extensions`
+2. Enable **Developer mode** (top right)
+3. Click **Load unpacked**
+4. Select this folder (the one containing `manifest.json`)
 
-## Sinkronisasi domain (opsional, untuk developer)
+## Domain sync (optional, for developers)
 
-Extension punya server sinkronisasi lokal supaya daftar domain blokir bisa di-update tanpa update extension:
+The extension has an optional local sync server so the blocked-domain list can be updated without a store update:
 
 ```bash
 python3 server/serve.py
 ```
 
-Server jalan di `http://127.0.0.1:8080/rules` dan menyajikan isi `server/rules.json`:
+The server runs at `http://127.0.0.1:8080/rules` and serves the contents of `server/rules.json`:
 
 ```json
 {
-  "domains": ["contoh-judol.example"]
+  "domains": ["example-gambling-site.com"]
 }
 ```
 
-**Tanpa server, extension tetap berfungsi penuh** — pakai daftar static bawaan (`rules/blocklist.json`). Server hanya jalan kalau kamu yang menjalankannya.
+**Without the server the extension still works fully** — it uses the built-in static list (`rules/blocklist.json`). The server only runs if you start it.
 
-## Menambah domain blokir
+## Adding blocked domains
 
-- **Cepat**: buka popup extension → ketik domain → **Tambah**. Langsung aktif di semua tab.
-- **Permanen di kode**: tambah ke `rules/blocklist.json` (static) dan/atau `server/rules.json` (sync).
+- **Quick**: open the extension popup → type the domain → **Add**. Takes effect on all tabs immediately.
+- **Permanent in code**: add to `rules/blocklist.json` (static) and/or `server/rules.json` (sync).
 
 ## Development
 
 ```bash
 npm install
-npx playwright test     # butuh Chromium murni (bukan branded Chrome)
+npx playwright test     # requires pure Chromium (not branded Chrome)
 ```
 
-## Lisensi
+## License
 
 [MIT](LICENSE)
 
-## Repo & Kontribusi
+## Repo & Contributing
 
 - Repo: https://github.com/wanglinsaputra/extension-iklan
-- Contoh / lapor domain iklan baru lewat issue GitHub.
-- Pull request diterima. Jalanin `npx playwright test` dulu sebelum nge-PR.
+- Found a new ad domain? Report it via a GitHub issue.
+- Pull requests welcome. Run `npx playwright test` before submitting a PR.
 
-## Struktur
+## Structure
 
 ```
-manifest.json        # konfigurasi MV3
-content.js           # content script (world MAIN): overlay, popup guard, ad-overlay remover
-bridge.js            # jembatan storage → MAIN world
-background.js        # service worker: DNR dynamic, sync, tab popunder closer
-popup.html/.js       # toggle on/off + tambah domain
-rules/blocklist.json # daftar domain blokir static (DNR)
-server/serve.py      # server sync lokal opsional
-test/                # halaman uji synthetic + e2e Playwright
+manifest.json        # MV3 configuration
+content.js           # content script (MAIN world): overlay, popup guard, ad-overlay remover
+bridge.js            # storage bridge → MAIN world
+background.js        # service worker: DNR dynamic, sync, popunder tab closer
+popup.html/.js       # on/off toggle + add domain
+rules/blocklist.json # static blocked-domain list (DNR)
+server/serve.py      # optional local sync server
+test/                # synthetic test pages + Playwright e2e
 ```

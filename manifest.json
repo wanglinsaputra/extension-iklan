@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Iklan Aman - Play Lurus",
   "version": "1.0.0",
-  "description": "Blokir iklan & redirect judol, tembus overlay biar klik langsung play.",
+  "description": "Blocks ads, popunders & gambling redirects on streaming sites. Tunnels overlay so Play works in one click. 100% local.",
   "permissions": ["declarativeNetRequest", "storage", "alarms", "tabs"],
   "host_permissions": ["http://127.0.0.1:8080/*"],
   "background": {

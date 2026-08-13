@@ -1,42 +1,42 @@
 # Privacy Policy — Iklan Aman
 
-Terakhir diperbarui: 2026-08-13
+Last updated: 2026-08-13
 
-## Data yang dikumpulkan
+## Data collected
 
-**Tidak ada.** Extension ini tidak mengumpulkan, menyimpan, mengirim, atau menjual data pribadi apa pun.
+**None.** This extension does not collect, store, send, or sell any personal data.
 
-Semua logika berjalan 100% lokal di browser kamu (`chrome.storage.local`). Tidak ada server remote, tidak ada analytics, tidak ada tracker.
+All logic runs 100% locally in your browser (`chrome.storage.local`). No remote servers, no analytics, no trackers.
 
-## Data yang disimpan di perangkat
+## Data stored on your device
 
-Hanya tiga hal, semua di `chrome.storage.local` perangkat kamu sendiri:
+Only three things, all in `chrome.storage.local` on your own device:
 
-1. `enabled` — status toggle (AKTIF/MATI).
-2. `extra` — daftar domain yang kamu tambahkan sendiri lewat popup.
-3. `sync` — timestamp + jumlah aturan terakhir.
+1. `enabled` — toggle state (ON/OFF).
+2. `extra` — the list of domains you added manually via the popup.
+3. `sync` — timestamp + rule count of the last sync.
 
-Tidak ada yang keluar dari browser.
+Nothing leaves your browser.
 
-## Sinkronisasi opsional (developer)
+## Optional sync (for developers)
 
-Background worker mencoba membaca `http://127.0.0.1:8080/rules` sekali per 30 menit untuk daftar domain tambahan.
+The background worker tries to fetch `http://127.0.0.1:8080/rules` once every 30 minutes for the additional domain list.
 
-- Ini **localhost** — komputer kamu sendiri.
-- Kalau tidak ada server yang jalan di port itu, request gagal diam-diam dan extension memakai daftar static bawaan.
-- **Tidak ada data pengguna yang dikirim.** Request-nya cuma GET read-only untuk daftar domain.
+- This is **localhost** — your own machine.
+- If no server is running on that port, the request fails silently and the extension uses its built-in static list.
+- **No user data is sent.** The request is a read-only GET for the domain list.
 
-## Izin yang diminta & kenapa
+## Permissions requested & why
 
-| Izin | Alasan |
-|------|--------|
-| `declarativeNetRequest` | Blokir request/navigasi ke domain iklan & judol |
-| `storage` | Simpan toggle & domain custom di perangkat |
-| `alarms` | Sinkronisasi berkala (opsional) |
-| `tabs` | Tutup tab popunder yang muncul otomatis |
+| Permission | Reason |
+|------------|--------|
+| `declarativeNetRequest` | Block requests/navigations to ad & gambling domains |
+| `storage` | Store toggle & custom domains on your device |
+| `alarms` | Periodic sync (optional) |
+| `tabs` | Close popunder tabs that open automatically |
 
-## Kontak
+## Contact
 
-Repo & issue: https://github.com/wanglinsaputra/extension-iklan
+Repo & issues: https://github.com/wanglinsaputra/extension-iklan
 
-Privacy policy ini tersedia di repo (file `PRIVACY.md`).
+This privacy policy is available in the repo (file `PRIVACY.md`).
