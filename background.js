@@ -130,10 +130,24 @@ async function isEnabled() {
   return enabled;
 }
 
+// URL hasil klik asli user (bukan popunder). Simpan di storage.session biar
+// kebaca deterministik dari tabs.onCreated/onUpdated (bukan var memory yang bisa race).
+const USERNAV_MS = 3500;
+chrome.runtime.onMessage.addListener((msg) => {
+  if (msg && msg.type === 'usernav') {
+    chrome.storage.session.set({ userNav: { url: msg.url, at: Date.now() } }).catch(() => {});
+  }
+});
+async function isUserNav(url) {
+  const { userNav } = await chrome.storage.session.get('userNav');
+  return userNav && userNav.url === url && Date.now() - userNav.at < USERNAV_MS;
+}
+
 chrome.tabs.onCreated.addListener(async (tab) => {
   if (!(await isEnabled())) return;
   // window.open(external) langsung → tab created dengan url external.
   if (!tab.openerTabId || !tab.url) return;
+  if (await isUserNav(tab.url)) return; // klik asli user → jangan tutup
   chrome.tabs.get(tab.openerTabId, (opener) => {
     if (chrome.runtime.lastError || !opener || !opener.url) return;
     if (isExternalPopup(tab.url, opener.url)) {
@@ -149,9 +163,11 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   const url = changeInfo.url;
   if (/^chrome-error:\/\//.test(url)) {
     // Tab popunder yang navigasinya diblokir DNR → mati sisa (chrome-error) → tutup.
+    if (await isUserNav(url)) return; // klik user ke situs yang gagal → biarin (error page user)
     chrome.tabs.remove(tabId);
     return;
   }
+  if (await isUserNav(url)) return; // klik asli user → jangan tutup
   chrome.tabs.get(tab.openerTabId, (opener) => {
     if (chrome.runtime.lastError || !opener || !opener.url) return;
     if (isExternalPopup(url, opener.url)) {

@@ -20,4 +20,11 @@
     if ('enabled' in changes) apply(changes.enabled.newValue);
     if ('domains' in changes) applyDomains(changes.domains.newValue);
   });
+
+  // Klik asli user di link host asing → kabari background biar tab-nya gak ditutup.
+  window.addEventListener('iklan-aman-usernav', (e) => {
+    if (e.detail && e.detail.href) {
+      chrome.runtime.sendMessage({ type: 'usernav', url: e.detail.href }).catch(() => {});
+    }
+  });
 })();

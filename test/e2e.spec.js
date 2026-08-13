@@ -105,6 +105,29 @@ test('anchor: klik link same-site tetap jalan', async ({ page }) => {
   await expect(page).toHaveURL(/me\.html$/);
 });
 
+test('klik link host ASING (user nav) → tab baru tetap kebuka, gak di-close', async ({ context, page }) => {
+  await page.goto('http://127.0.0.1:8090/popup.html');
+  // anchor target=_blank ke host asing yang BUKAN domain blokir
+  await page.evaluate(() => {
+    const a = document.createElement('a');
+    a.id = 'extLink';
+    a.href = 'https://example.com/me';
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.textContent = 'external';
+    document.body.appendChild(a);
+  });
+  const [newPage] = await Promise.all([
+    context.waitForEvent('page', { timeout: 5000 }),
+    page.click('#extLink'),
+  ]);
+  await newPage.waitForLoadState('domcontentloaded').catch(() => {});
+  await page.waitForTimeout(1500);
+  const tabs = context.pages().map((p) => p.url());
+  expect(tabs).toContain('https://example.com/me');
+  await newPage.close();
+});
+
 test('search-redirect (google?q=judol) diblokir', async ({ page }) => {
   await page.goto('http://127.0.0.1:8090/popup.html');
   await page.click('#search');
