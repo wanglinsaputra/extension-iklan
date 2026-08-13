@@ -9,7 +9,7 @@
     'taboola.com', 'outbrain.com', 'rm358.com', 'signamentswithd.com',
     'pgslot88semarang.com', 'supechcopa.com', 'poodleshocuses.cyou',
     'junclikrmedi.com', 'crmared.com', 'crmrc.livejasmin.com',
-    'pncloudfl.com', 'detoxifylagoonsnugness.com',
+    'pncloudfl.com', 'detoxifylagoonsnugness.com', 'massive-hall.com',
   ]);
 
   let enabled = document.documentElement.dataset.iklanAman !== 'off';
@@ -39,7 +39,7 @@
       'taboola.com', 'outbrain.com', 'rm358.com', 'signamentswithd.com',
       'pgslot88semarang.com', 'supechcopa.com', 'poodleshocuses.cyou',
       'junclikrmedi.com', 'crmared.com', 'crmrc.livejasmin.com',
-      'pncloudfl.com', 'detoxifylagoonsnugness.com',
+      'pncloudfl.com', 'detoxifylagoonsnugness.com', 'massive-hall.com',
     ]);
     (e.detail.domains || []).forEach((d) => blockDomains.add(String(d).toLowerCase()));
   });
@@ -80,56 +80,64 @@
       return p === 'fixed' || p === 'absolute';
     };
 
+    // Elemen player video (jw-*, controls, media, ...) — JANGAN dihapus.
+    const isPlayerEl = (el) => {
+      if (!(el instanceof HTMLElement)) return false;
+      if (el.tagName === 'VIDEO') return true;
+      const cls = ((el.className || '') + ' ' + (el.id || '')).toLowerCase();
+      return (
+        /jw[-_]|jwplayer/.test(cls) ||
+        /(^|[-_: _])controls?([-_: _]|$)/.test(cls) ||
+        /(^|[-_: _])(player|media|videowrapper|video-box|videoplayer|playback)([-_: _]|$)/.test(cls)
+      );
+    };
+
+    // Dari img ad, cari kontainer toggle yang AMAN dihapus (bukan bagian player).
     const findAdParent = (el) => {
       let cur = el.parentElement;
       let guard = 0;
+      let lastSafe = el.parentElement;
       while (cur && cur !== document.body && cur !== document.documentElement && guard++ < 8) {
-        if (isFixedAbs(cur)) return cur;
+        if (!isPlayerEl(cur) && !isPlayerEl(cur.parentElement)) lastSafe = cur;
+        if (isFixedAbs(cur) && !isPlayerEl(cur) && !isPlayerEl(cur.parentElement)) return cur;
         cur = cur.parentElement;
       }
-      return el.parentElement;
+      // fallback: parent paling dekat yang bukan player (jangan hapus video/controls)
+      let fallback = el.parentElement;
+      while (fallback && fallback !== document.body && isPlayerEl(fallback)) fallback = fallback.parentElement;
+      return fallback && fallback !== document.body ? fallback : null;
     };
 
     const process = (root) => {
-      const hostOrDoc = (el) => (el instanceof HTMLIFrameElement ? (el.contentDocument || null) : null);
-
       // kumpulin semua root termasuk shadow DOM
       const roots = [root || document];
-      if (root || true) {
-        const walkShadow = (n) => {
-          const all = n.querySelectorAll('*');
-          for (const el of all) {
-            if (el.shadowRoot) {
-              roots.push(el.shadowRoot);
-              walkShadow(el.shadowRoot);
-            }
+      const walkShadow = (n) => {
+        const all = n.querySelectorAll('*');
+        for (const el of all) {
+          if (el.shadowRoot) {
+            roots.push(el.shadowRoot);
+            walkShadow(el.shadowRoot);
           }
-        };
-        walkShadow(root || document);
-      }
+        }
+      };
+      walkShadow(root || document);
 
       for (const r of roots) {
-        // 1) img dari domain blokir → hapus kontainer fixed/absolute terdekat
+        // 1) img dari domain blokir → hapus kontainer non-player terdekat
         const imgs = r.querySelectorAll('img');
         for (const img of imgs) {
           let host = '';
           try { host = new URL(img.src, location.href).hostname; } catch (_) { continue; }
           if (!isBlockedHost(host)) continue;
-          let cur = img.parentElement;
-          let guard = 0;
-          let target = img.parentElement;
-          while (cur && cur !== document.body && guard++ < 8) {
-            if (isFixedAbs(cur)) { target = cur; break; }
-            cur = cur.parentElement;
-          }
+          const target = findAdParent(img);
           if (target && target.isConnected) target.remove();
         }
 
-        // 2) grey-zone: kontainer fixed/absolute kecil + badge "Ad" + CTA dewasa
+        // 2) grey-zone: kontainer fixed/absolute kecil + badge "Ad" + CTA dewasa (bukan player)
         const all = r.querySelectorAll('div,section,aside');
         for (let i = all.length - 1; i >= 0; i--) {
           const el = all[i];
-          if (!el.isConnected || !isFixedAbs(el)) continue;
+          if (!el.isConnected || !isFixedAbs(el) || isPlayerEl(el)) continue;
           const rect = el.getBoundingClientRect();
           if (rect.width > innerWidth || rect.height > innerHeight) continue;
           const t = el.textContent || '';
@@ -189,10 +197,14 @@
   const hitOverlay = (e) =>
     document.elementsFromPoint(e.clientX, e.clientY).some(isOverlay);
 
+  // Overlay pass-through HANYA di top frame. Di dalam iframe player, kontrol
+  // (pause/volume/fullscreen) butuh klik asli — jangan di-intercept.
+  const isTopFrame = window.self === window.top;
+
   document.addEventListener(
     'pointerdown',
     (e) => {
-      if (!enabled) return;
+      if (!enabled || !isTopFrame) return;
       if (e.button !== 0 || !hitOverlay(e)) return;
       e.preventDefault();
       e.stopImmediatePropagation();
@@ -213,7 +225,7 @@
   );
 
   const passThrough = (e) => {
-    if (!enabled) return;
+    if (!enabled || !isTopFrame) return;
     if (e._pass) return;
     if (e.button !== 0 && e.type !== 'auxclick') return;
     if (!hitOverlay(e)) return;

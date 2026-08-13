@@ -196,5 +196,14 @@
       "urlFilter": "||detoxifylagoonsnugness.com",
       "resourceTypes": ["main_frame", "sub_frame", "script", "image", "xmlhttprequest", "ping", "other"]
     }
+  },
+  {
+    "id": 27,
+    "priority": 3,
+    "action": { "type": "block" },
+    "condition": {
+      "urlFilter": "||massive-hall.com",
+      "resourceTypes": ["main_frame", "sub_frame", "script", "image", "xmlhttprequest", "ping", "other"]
+    }
   }
 ]
